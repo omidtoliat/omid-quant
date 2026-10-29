@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Omid QUANT | تحلیلگر بنیادی</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<style>
+:root{--bg:#09111f;--panel:#111d30;--panel2:#16243a;--line:#293b55;--text:#eef4ff;--muted:#9aacc4;--mint:#68e0b8;--blue:#8bbcff;--warn:#ffda8a;--red:#ff9f9f}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#142641 0,#09111f 55%);color:var(--text);font-family:Tahoma,Arial,sans-serif;line-height:1.8}
+main{max-width:1120px;margin:auto;padding:22px 16px 50px}.brand{display:flex;align-items:center;gap:14px;margin-bottom:20px}.logo{width:54px;height:54px;border-radius:16px;background:#183c4a;display:grid;place-items:center;color:var(--mint);font-size:26px}.brand h1{margin:0;font-size:24px;letter-spacing:.3px}.brand p{margin:2px 0 0;color:var(--muted);font-size:12px}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.pill{border:1px solid var(--line);background:var(--panel);color:var(--text);padding:8px 13px;border-radius:999px;font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}.card{background:linear-gradient(150deg,#142239,#0f1a2b);border:1px solid var(--line);border-radius:18px;padding:17px;min-width:0}.span12{grid-column:span 12}.span8{grid-column:span 8}.span6{grid-column:span 6}.span4{grid-column:span 4}.span3{grid-column:span 3}
+h2{font-size:17px;margin:0 0 10px}h3{font-size:14px;margin:0 0 8px;color:var(--blue)}p,.hint{color:var(--muted);font-size:13px;margin:5px 0 12px}
+input,select,textarea{width:100%;background:#0a1423;border:1px solid #344761;color:var(--text);border-radius:10px;padding:10px;font:inherit;font-size:13px}input[type=file]{padding:12px}label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px}.field{margin-bottom:12px}
+button{border:0;border-radius:11px;background:var(--mint);color:#072019;font-weight:bold;padding:11px 16px;cursor:pointer;font:inherit;font-size:13px}button.secondary{background:#20324b;color:var(--text);border:1px solid var(--line)}button:disabled{opacity:.4;cursor:not-allowed}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.row>*{flex:1}.metric{background:#0b1728;border:1px solid var(--line);border-radius:14px;padding:13px}.metric small{display:block;color:var(--muted);font-size:11px}.metric strong{font-size:23px;color:var(--mint);display:block;direction:ltr;text-align:right;overflow-wrap:anywhere}
+table{border-collapse:collapse;width:100%;font-size:12px}th,td{padding:10px 8px;text-align:right;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--blue);font-weight:bold}td{overflow-wrap:anywhere}.status{padding:10px 12px;background:#102a2a;border:1px solid #27564b;border-radius:12px;color:#b8f6df;font-size:13px}.warn{background:#302817;border-color:#67552d;color:#ffe6ad}.danger{background:#321e27;border-color:#6b3541;color:#ffc5c5}.hidden{display:none}.badge{display:inline-block;border:1px solid var(--line);border-radius:8px;padding:2px 8px;color:var(--muted);font-size:11px}.good{color:var(--mint)}.bad{color:var(--red)}.neutral{color:var(--warn)}.mapping{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.scoreline{display:grid;grid-template-columns:1fr 70px;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}.scoreline input{max-width:75px}.foot{color:var(--muted);font-size:11px;margin-top:16px}
+@media(max-width:760px){main{padding:14px 10px}.span8,.span6,.span4,.span3{grid-column:span 12}.mapping{grid-template-columns:1fr 1fr}.brand h1{font-size:20px}.metric strong{font-size:20px}}
+</style>
+</head>
+<body><main>
+<header class="brand"><div class="logo">◈</div><div><h1>OMID QUANT</h1><p>FUNDAMENTAL INTELLIGENCE · تحلیلگر بنیادی سهام</p></div></header>
+<nav><span class="pill">۱. دریافت گزارش</span><span class="pill">۲. تطبیق داده‌ها</span><span class="pill">۳. نسبت‌ها و نظر تحلیلی</span><span class="pill">۴. نمودار</span></nav>
+<div class="grid">
+<section class="card span12">
+<h2>گزارش مالی شرکت را وارد کن</h2>
+<p>فایل Excel یا CSV صورت‌های مالی را انتخاب کن. برنامه شیت‌ها و سلول‌های فایل را می‌خواند و برای جلوگیری از نسبت‌های اشتباه، قبل از تحلیل امکان تطبیق داده‌ها را می‌دهد.</p>
+<div class="row"><div class="field"><label for="file">فایل گزارش مالی (.xlsx, .xls, .csv)</label><input id="file" type="file" accept=".xlsx,.xls,.csv"></div><div style="flex:0 0 auto"><button id="demo" type="button" class="secondary">بارگذاری نمونه آزمایشی</button></div></div>
+<div id="fileStatus" class="status">هنوز فایلی انتخاب نشده است. فایل می‌تواند چند شیت داشته باشد.</div><noscript><div class="status danger" style="margin-top:10px">جاوااسکریپت در این پیش‌نمایش اجرا نمی‌شود. فایل را در مرورگر واقعی با اجرای JavaScript باز کن؛ در پیش‌نمایش داخل ChatGPT یا Files ممکن است دکمه‌ها کار نکنند.</div></noscript>
+<div id="sheetArea" class="field hidden" style="margin-top:12px"><label for="sheetSelect">شیت مورد تحلیل</label><select id="sheetSelect"></select></div>
+</section>
+<section class="card span12 hidden" id="mappingCard">
+<h2>تطبیق داده‌ها</h2><p>اگر سامانه مقادیر را اشتباه تشخیص داد، از این قسمت اصلاحشان کن. مبالغ باید واحد یکسان داشته باشند.</p>
+<div class="mapping" id="mapping"></div>
+<div class="row"><div class="field"><label for="months">طول دوره گزارش (ماه)</label><input id="months" type="number" min="1" max="24" value="12"></div><div class="field"><label for="payout">درصد تقسیم سود (مثلاً ۴۰٪)</label><input id="payout" type="number" min="0" max="100" value="40"></div><div class="field"><label for="unit">واحد مبالغ</label><select id="unit"><option>واحد فایل</option><option>ریال</option><option>میلیون ریال</option><option>تومان</option><option>میلیون تومان</option><option>میلیارد تومان</option></select></div></div>
+<button id="analyze" type="button">محاسبه نسبت‌ها و تولید نظر</button>
+</section>
+<section class="card span12 hidden" id="results">
+<h2 id="companyTitle">گزارش تحلیلی</h2><div id="summary" class="status"></div>
+<div class="grid" style="margin-top:14px">
+<div class="metric span3"><small>P/E</small><strong id="pe">—</strong></div>
+<div class="metric span3"><small>P/A</small><strong id="pa">—</strong></div>
+<div class="metric span3"><small>P/B</small><strong id="pb">—</strong></div>
+<div class="metric span3"><small>P/S</small><strong id="ps">—</strong></div>
+<div class="metric span3"><small>P/D اختصاصی</small><strong id="pd">—</strong></div>
+<div class="metric span3"><small>حاشیه سود خالص</small><strong id="margin">—</strong></div>
+<div class="metric span3"><small>بدهی / دارایی</small><strong id="debtRatio">—</strong></div>
+<div class="metric span3"><small>جریان نقد آزاد</small><strong id="fcf">—</strong></div>
+</div>
+<h2 style="margin-top:20px">نظر تحلیلی سامانه</h2><div id="opinion" class="status"></div>
+<h2 style="margin-top:20px">جدول نسبت‌ها</h2><div style="overflow:auto"><table><thead><tr><th>شاخص</th><th>مقدار</th><th>تفسیر</th></tr></thead><tbody id="ratioRows"></tbody></table></div>
+<h2 style="margin-top:20px">امتیازدهی بنیادی اختصاصی</h2><p>امتیازها را از ۰ تا ۱۰ وارد کن. نسبت‌ها محاسبه می‌شوند، اما امتیازهای کیفی بدون معیارهای مقایسه صنعت و بررسی یادداشت‌های گزارش، باید با قضاوت تحلیلگر تعیین شوند.</p>
+<div id="scores"></div><div class="metric" style="margin-top:12px"><small>امتیاز نهایی از ۱۰</small><strong id="finalScore">—</strong></div>
+<div class="row" style="margin-top:14px"><button id="download">دریافت گزارش تحلیلی CSV</button><button id="print" class="secondary">چاپ / ذخیره PDF</button></div>
+</section>
+<section class="card span12 hidden" id="chartCard"><h2>رسم نمودار از داده‌های گزارش</h2><p>برای رسم روند، داده‌های تاریخی را از فایل انتخاب کن یا دستی وارد کن. برنامه فقط داده‌های موجود را نمایش می‌دهد و مقادیر تاریخی نمی‌سازد.</p>
+<div class="row"><div class="field"><label for="chartType">نوع نمودار</label><select id="chartType"><option value="line">خطی</option><option value="bar">میله‌ای</option></select></div><div class="field"><label for="chartTitle">عنوان نمودار</label><input id="chartTitle" value="روند شاخص مالی"></div></div>
+<label for="chartData">هر خط: برچسب,مقدار (مثلاً ۱۴۰۲,125)</label><textarea id="chartData" rows="5">۱۴۰۱,300
+۱۴۰۲,360
+۱۴۰۳,390
+۱۴۰۴,440
+۱۴۰۵,500</textarea>
+<button id="draw">رسم / به‌روزرسانی نمودار</button><div style="margin-top:15px"><canvas id="chart" height="110"></canvas></div>
+</section>
+</div>
+<div class="foot">Omid QUANT prototype · داده‌ها در همین مرورگر پردازش می‌شوند. این نسخه به سامانه ناشر یا بورس متصل نیست. خروجی ابزار پژوهشی است، نه توصیه قطعی خرید یا فروش.</div>
+</main>
+<script>
+const fields=[
+{id:'company',label:'نام شرکت / نماد',aliases:['نماد','نام شرکت','شرکت','نام نماد','symbol','company'],default:'شرکت واردشده',kind:'text'},
+{id:'marketCap',label:'ارزش بازار',aliases:['ارزش بازار','ارزش بازار کل','market cap','marketcap','ارزش کل بازار'],default:'',kind:'number'},
+{id:'operatingRevenue',label:'درآمد عملیاتی دوره',aliases:['درآمدهای عملیاتی','درآمد عملیاتی','فروش خالص','درآمد فروش','درآمد فروش و خدمات','operating revenue','revenue','فروش'],default:'',kind:'number'},
+{id:'netIncome',label:'سود خالص دوره',aliases:['سود خالص','سود (زیان) خالص','سود خالص دوره','net income','net profit'],default:'',kind:'number'},
+{id:'months',label:'طول دوره (ماه)',aliases:['طول دوره','دوره گزارش','ماه','months','دوره مالی'],default:'12',kind:'number'},
+{id:'operatingContinuingProfit',label:'سود عملیاتی عملیات در حال تداوم',aliases:['سود عملیاتی حاصل از عملیات در حال تداوم','سود عملیاتی از عملیات در حال تداوم','سود عملیاتی','operating profit'],default:'',kind:'number'},
+{id:'assets',label:'کل دارایی‌ها',aliases:['جمع دارایی‌ها','جمع داراییها','کل دارایی‌ها','دارایی‌های کل','total assets','دارایی'],default:'',kind:'number'},
+{id:'equity',label:'حقوق صاحبان سهام',aliases:['حقوق صاحبان سهام','جمع حقوق صاحبان سهام','حقوق مالکانه','total equity','equity'],default:'',kind:'number'},
+{id:'liabilities',label:'بدهی‌های کل',aliases:['جمع بدهی‌ها','جمع بدهیها','کل بدهی‌ها','بدهی‌های کل','total liabilities','بدهی'],default:'',kind:'number'},
+{id:'operatingCashFlow',label:'جریان نقد عملیاتی',aliases:['جریان نقد عملیاتی','خالص جریان‌های نقدی حاصل از فعالیت‌های عملیاتی','جریان‌های نقدی عملیاتی','operating cash flow'],default:'',kind:'number'},
+{id:'capex',label:'مخارج سرمایه‌ای (CapEx)',aliases:['مخارج سرمایه‌ای','خرید دارایی ثابت','خرید اموال ماشین آلات و تجهیزات','capex','capital expenditures'],default:'',kind:'number'},
+{id:'priorRevenue',label:'درآمد دوره مشابه سال قبل',aliases:['درآمد عملیاتی دوره مشابه سال قبل','فروش دوره مشابه سال قبل','prior revenue'],default:'',kind:'number'},
+{id:'priorProfit',label:'سود خالص دوره مشابه سال قبل',aliases:['سود خالص دوره مشابه سال قبل','سود خالص سال قبل','prior net income'],default:'',kind:'number'},
+{id:'financialCost',label:'هزینه مالی دوره',aliases:['هزینه‌های مالی','هزینه مالی','finance costs','financial cost'],default:'',kind:'number'},
+{id:'operatingProfit',label:'سود عملیاتی دوره',aliases:['سود عملیاتی','سود حاصل از عملیات','operating profit'],default:'',kind:'number'}
+];
+let workbook=null,rawRows=[],values={},lastReport=null,chartObj=null;
+const $=id=>document.getElementById(id);
+function norm(s){return String(s??'').toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[\s‌_()\-]/g,'').replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).trim()}
+function num(v){if(typeof v==='number')return v;let s=String(v??'').replace(/,/g,'').replace(/[٬،]/g,'').replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[−–]/g,'-').replace(/٪|%/g,'').trim();if(!s||s==='-'||s==='—')return NaN;return Number(s)}
+function cellRows(sheet){return XLSX.utils.sheet_to_json(sheet,{header:1,defval:null,raw:true})}
+function findValue(rows,aliases){let als=aliases.map(norm);for(let i=0;i<rows.length;i++){for(let j=0;j<Math.min(rows[i].length,8);j++){let cell=norm(rows[i][j]);if(!cell)continue;if(als.some(a=>cell===a||cell.includes(a)||a.includes(cell)&&cell.length>3)){for(let k=rows[i].length-1;k>j;k--){let x=rows[i][k];if(x!==null&&x!==''&&Number.isFinite(num(x)))return x}if(i+1<rows.length){for(let k=rows[i+1].length-1;k>=0;k--){let x=rows[i+1][k];if(x!==null&&x!==''&&Number.isFinite(num(x)))return x}}}}}return ''}
+function renderMapping(){const el=$('mapping');el.innerHTML='';fields.forEach(f=>{let wrap=document.createElement('div');wrap.className='field';let lab=document.createElement('label');lab.htmlFor='f_'+f.id;lab.textContent=f.label;let input=document.createElement('input');input.id='f_'+f.id;input.type=f.kind==='text'?'text':'number';input.value=values[f.id]??'';input.placeholder=f.default||'از فایل تشخیص داده نشد';input.addEventListener('input',()=>values[f.id]=input.value);wrap.append(lab,input);el.append(wrap)})}
+function fillDetected(){fields.forEach(f=>{if(f.id==='months')return;let v=findValue(rawRows,f.aliases);if(v!==''&&v!==null)values[f.id]=v;else values[f.id]=values[f.id]??f.default??''});if(!values.months)values.months=$('months').value||12;renderMapping()}
+function showSheets(){const s=$('sheetSelect');s.innerHTML='';workbook.SheetNames.forEach(n=>{let o=document.createElement('option');o.value=n;o.textContent=n;s.append(o)});s.onchange=()=>loadSheet(s.value);$('sheetArea').classList.remove('hidden')}
+function loadSheet(name){rawRows=cellRows(workbook.Sheets[name]);fillDetected();$('mappingCard').classList.remove('hidden');$('fileStatus').textContent=`شیت «${name}» خوانده شد؛ فیلدهای تشخیص‌داده‌شده را بررسی و اصلاح کن.`}
+$('file').addEventListener('change',async e=>{const file=e.target.files[0];if(!file)return;try{const buf=await file.arrayBuffer();if(!window.XLSX)throw Error('کتابخانه خواندن Excel بارگذاری نشده؛ اتصال اینترنت را بررسی کن.');workbook=XLSX.read(buf,{type:'array'});showSheets();loadSheet(workbook.SheetNames[0]);$('fileStatus').textContent=`فایل «${file.name}» خوانده شد (${workbook.SheetNames.length} شیت).`}catch(err){$('fileStatus').className='status danger';$('fileStatus').textContent='خطا در خواندن فایل: '+err.message}});
+$('demo').addEventListener('click',()=>{try{values={company:'نمونه آزمایشی',marketCap:1000000,operatingRevenue:250000,netIncome:30000,months:3,operatingContinuingProfit:40000,assets:700000,equity:350000,liabilities:350000,operatingCashFlow:25000,capex:10000,priorRevenue:200000,priorProfit:22000,financialCost:8000,operatingProfit:40000};rawRows=[];renderMapping();$('mappingCard').classList.remove('hidden');$('fileStatus').className='status';$('fileStatus').textContent='داده‌های آزمایشی بارگذاری شدند؛ این اعداد واقعی نیستند. حالا روی «محاسبه نسبت‌ها و تولید نظر» بزن.';$('months').value=3;$('payout').value=40;$('mappingCard').scrollIntoView({behavior:'smooth',block:'start'});}catch(err){$('fileStatus').className='status danger';$('fileStatus').textContent='خطا در بارگذاری نمونه: '+err.message;}});
+function val(id){let x=values[id];if(x===''||x===null||x===undefined)return NaN;return typeof x==='string'&&id==='company'?x:num(x)}
+function fnum(x,d=2){return Number.isFinite(x)?x.toLocaleString('en-US',{maximumFractionDigits:d}):'قابل محاسبه نیست'}
+function pct(x){return Number.isFinite(x)?(x*100).toLocaleString('en-US',{maximumFractionDigits:2})+'%':'قابل محاسبه نیست'}
+function addRow(a,b,c){let tr=document.createElement('tr');[a,b,c].forEach(t=>{let td=document.createElement('td');td.textContent=t;tr.append(td)});$('ratioRows').append(tr)}
+function analyze(){
+let m=val('marketCap'),rev=val('operatingRevenue'),ni=val('netIncome'),months=num($('months').value)||val('months')||12,opCont=val('operatingContinuingProfit'),assets=val('assets'),equity=val('equity'),liab=val('liabilities'),ocf=val('operatingCashFlow'),capex=val('capex'),pr=val('priorRevenue'),pn=val('priorProfit'),fin=val('financialCost'),op=val('operatingProfit'),payout=(num($('payout').value)||0)/100;
+let annualRev=rev/months*12,annualNI=ni/months*12;
+let R={pe:annualNI>0?m/annualNI:NaN,pa:assets>0?m/assets:NaN,pb:equity>0?m/equity:NaN,ps:annualRev>0?m/annualRev:NaN,pd:m>0?(opCont/months*12*payout)/m:NaN,margin:rev!==0?ni/rev:NaN,debt:assets>0?liab/assets:NaN,fcf:Number.isFinite(ocf)&&Number.isFinite(capex)?ocf-capex:NaN,cashQuality:ni!==0?ocf/ni:NaN,growthRev:pr>0?rev/pr-1:NaN,growthProfit:pn>0?ni/pn-1:NaN,interest:fin>0?op/fin:NaN};
+lastReport={company:values.company||'شرکت',unit:$('unit').value,months,payout,...R,annualRev,annualNI};
+$('results').classList.remove('hidden');$('chartCard').classList.remove('hidden');$('companyTitle').textContent='گزارش بنیادی | '+lastReport.company;
+[['pe',R.pe],['pa',R.pa],['pb',R.pb],['ps',R.ps]].forEach(([id,x])=>$(id).textContent=fnum(x));
+$('pd').textContent=pct(R.pd);$('margin').textContent=pct(R.margin);$('debtRatio').textContent=pct(R.debt);$('fcf').textContent=fnum(R.fcf);
+const warnings=[];if(!Number.isFinite(m))warnings.push('ارزش بازار مشخص نیست.');if(!Number.isFinite(rev))warnings.push('درآمد عملیاتی مشخص نیست.');if(!Number.isFinite(ni))warnings.push('سود خالص مشخص نیست.');if(ni<0)warnings.push('شرکت زیان‌ده است؛ P/E استاندارد قابل تفسیر نیست.');if(equity<=0)warnings.push('حقوق صاحبان سهام صفر یا منفی است؛ P/B قابل اتکا نیست.');if(!Number.isFinite(ocf))warnings.push('جریان نقد عملیاتی در فایل پیدا نشد.');if(!Number.isFinite(pr)||!Number.isFinite(pn))warnings.push('برای رشد سالانه، اطلاعات دوره مشابه سال قبل کافی نیست.');
+$('summary').className='status'+(warnings.length?' warn':'');$('summary').textContent=warnings.length?'محدودیت داده: '+warnings.join(' '):'فیلدهای اصلی برای محاسبه پیدا شده‌اند؛ تفسیر نهایی به مقایسه صنعت و بررسی یادداشت‌ها نیاز دارد.';
+$('ratioRows').innerHTML='';
+addRow('فروش سالانه‌شده',fnum(annualRev),`درآمد عملیاتی ${fnum(rev)} ÷ ${months} × ۱۲`);
+addRow('سود خالص سالانه‌شده',fnum(annualNI),'سود خالص دوره به‌صورت خطی سالانه شده است؛ فصلی بودن می‌تواند نتیجه را منحرف کند.');
+addRow('P/E',fnum(R.pe),'ارزش بازار ÷ سود خالص سالانه‌شده. در زیان خالص معنادار نیست.');
+addRow('P/A',fnum(R.pa),'ارزش بازار ÷ کل دارایی‌ها.');
+addRow('P/B',fnum(R.pb),'ارزش بازار ÷ حقوق صاحبان سهام.');
+addRow('P/S',fnum(R.ps),'ارزش بازار ÷ فروش سالانه‌شده.');
+addRow('P/D اختصاصی',pct(R.pd),'طبق تعریف تو: (سود عملیاتی عملیات در حال تداوم ÷ ماه‌های دوره × ۱۲ × درصد تقسیم سود) ÷ ارزش بازار.');
+addRow('حاشیه سود خالص',pct(R.margin),'سود خالص دوره ÷ درآمد عملیاتی دوره.');
+addRow('بدهی به دارایی',pct(R.debt),'بدهی کل ÷ کل دارایی‌ها.');
+addRow('جریان نقد آزاد',fnum(R.fcf),'جریان نقد عملیاتی − مخارج سرمایه‌ای.');
+addRow('نسبت جریان نقد عملیاتی به سود خالص',fnum(R.cashQuality),'شاخص اولیه کیفیت سود؛ برای قضاوت باید چند دوره و تغییر سرمایه در گردش بررسی شود.');
+addRow('رشد درآمد عملیاتی',pct(R.growthRev),'مقایسه با دوره مشابه سال قبل.');
+addRow('رشد سود خالص',pct(R.growthProfit),'اگر سود دوره قبل صفر یا منفی باشد، درصد رشد قابل اتکا نیست.');
+addRow('پوشش هزینه مالی',fnum(R.interest),'سود عملیاتی ÷ هزینه مالی.');
+let opinions=[];
+if(Number.isFinite(R.pe)) opinions.push(R.pe<10?'P/E پایین‌تر از ۱۰ است؛ با رشد، ریسک و میانگین صنعت مقایسه شود.':R.pe>25?'P/E بالاتر از ۲۵ است؛ بازار ممکن است رشد بالایی قیمت‌گذاری کرده باشد.':'P/E به‌تنهایی نه ارزندگی را ثابت می‌کند و نه گران‌بودن را.');
+if(Number.isFinite(R.debt)) opinions.push(R.debt>0.65?'نسبت بدهی به دارایی بالاست و بررسی توان بازپرداخت اهمیت ویژه دارد.':'نسبت بدهی به دارایی به‌تنهایی هشدار شدید نشان نمی‌دهد؛ ساختار بدهی و صنعت مهم‌اند.');
+if(Number.isFinite(R.cashQuality)) opinions.push(R.cashQuality<0.7?'جریان نقد عملیاتی نسبت به سود خالص ضعیف است؛ کیفیت سود و سرمایه در گردش بررسی شود.':R.cashQuality>1?'جریان نقد عملیاتی از سود خالص بیشتر است؛ این می‌تواند نشانه مثبتی باشد، اما پایداری آن باید بررسی شود.':'تطابق جریان نقد با سود نیازمند بررسی روند چندساله است.');
+if(Number.isFinite(R.fcf)) opinions.push(R.fcf<0?'جریان نقد آزاد منفی است؛ بررسی سرمایه‌گذاری‌های رشد، بدهی و منابع تأمین مالی ضروری است.':'جریان نقد آزاد مثبت است؛ پایداری آن را در چند دوره بررسی کن.');
+if(Number.isFinite(R.growthRev)) opinions.push(R.growthRev>0?'درآمد نسبت به دوره مشابه رشد کرده است.':'درآمد نسبت به دوره مشابه رشد نکرده است.');
+opinions.push('این نظر اولیه و مبتنی بر آستانه‌های عمومی است؛ بدون داده هم‌صنعت، چندین دوره مالی، یادداشت‌ها و گزارش حسابرس، نتیجه قطعی ارزندگی صادر نمی‌شود.');
+$('opinion').textContent=opinions.join(' ');
+renderScores();drawChart();
+}
+const criteria=[['ارزش‌گذاری و نسبت‌های مالی',2],['رشد فروش و سود',1.5],['سودآوری',1.5],['کیفیت سود',1.5],['سلامت مالی و بدهی',1.5],['جریان نقد و سرمایه در گردش',1],['ریسک‌ها و کیفیت گزارشگری',1]];
+function renderScores(){let el=$('scores');el.innerHTML='';criteria.forEach(([name,w],i)=>{let d=document.createElement('div');d.className='scoreline';let lab=document.createElement('label');lab.textContent=name+' (وزن '+w+')';let inp=document.createElement('input');inp.type='number';inp.min=0;inp.max=10;inp.step=0.5;inp.value=5;inp.id='score'+i;inp.addEventListener('input',calcScore);d.append(lab,inp);el.append(d)});calcScore()}
+function calcScore(){let weights=0,total=0;criteria.forEach(([n,w],i)=>{let v=Math.max(0,Math.min(10,num($('score'+i)?.value)||0));total+=w*v;weights+=w});$('finalScore').textContent=(total/weights).toFixed(2)+' / 10'}
+function drawChart(){if(!window.Chart)return;let rows=$('chartData').value.split('\n').map(x=>x.split(',')).filter(x=>x.length>=2&&x[0].trim()!==''&&Number.isFinite(num(x[1])));if(rows.length<2)return;let ctx=$('chart').getContext('2d');if(chartObj)chartObj.destroy();chartObj=new Chart(ctx,{type:$('chartType').value,data:{labels:rows.map(x=>x[0].trim()),datasets:[{label:$('chartTitle').value||'شاخص',data:rows.map(x=>num(x[1])),borderColor:'#68e0b8',backgroundColor:'rgba(104,224,184,.25)',tension:.25,fill:false}]},options:{responsive:true,plugins:{legend:{labels:{color:'#eef4ff'}}},scales:{x:{ticks:{color:'#9aacc4'},grid:{color:'#26364d'}},y:{ticks:{color:'#9aacc4'},grid:{color:'#26364d'}}}}})}
+$('analyze').onclick=()=>{values.months=$('months').value;analyze()};
+$('draw').onclick=drawChart;$('chartType').onchange=drawChart;
+$('download').onclick=()=>{if(!lastReport)return;let lines=[['شاخص','مقدار'],['شرکت',lastReport.company],['واحد',lastReport.unit],['P/E',lastReport.pe],['P/A',lastReport.pa],['P/B',lastReport.pb],['P/S',lastReport.ps],['P/D اختصاصی',lastReport.pd],['حاشیه سود خالص',lastReport.margin],['بدهی به دارایی',lastReport.debt],['جریان نقد آزاد',lastReport.fcf],['رشد درآمد',lastReport.growthRev],['رشد سود',lastReport.growthProfit],['امتیاز بنیادی', $('finalScore').textContent],['نظر تحلیلی',$('opinion').textContent]];let csv='\ufeff'+lines.map(r=>r.map(x=>'"'+String(x??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));a.download='Omid_QUANT_Report.csv';a.click();URL.revokeObjectURL(a.href)};
+$('print').onclick=()=>window.print();
+</script></body></html>
